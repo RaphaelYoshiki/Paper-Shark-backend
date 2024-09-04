@@ -38,7 +38,7 @@ router.get('/export-csv', async (req, res) => {
     // Converter os dados para CSV
     let csvData = 'Cliente,Responsável,Motivo,Qtd Col,Val Col,Qtd PB,Val PB,Método Pgt,Val Total,Data de Registro\n';
     prints.forEach(print => {
-      csvData += `${print.cliente},${print.responsavel},${print.motivo},${print.qtd_col},${print.val_col},${print.qtd_pb},${print.val_pb},${print.metodo_pgt},${print.val_total},${print.registrationDate}\n`;
+      csvData += `${print.cliente},${print.responsavel},${print.motivo},${print.qtd_col},${print.val_col},${print.qtd_pb},${print.val_pb},${print.mtd_pgto},${print.val_total},${print.registrationDate}\n`;
     });
 
     res.header('Content-Type', 'text/csv');
