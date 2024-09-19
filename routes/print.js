@@ -31,22 +31,42 @@ router.post('/add', async (req, res) => {
 });
 
 // Rota para exportar dados em CSV
-router.get('/export-csv', async (req, res) => {
+router.get('/report', async (req, res) => {
   try {
-    const prints = await Print.find({});
-    
-    // Converter os dados para CSV
-    let csvData = 'Cliente,Responsável,Motivo,Qtd Col,Val Col,Qtd PB,Val PB,Método Pgt,Val Total,Data de Registro\n';
-    prints.forEach(print => {
-      csvData += `${print.cliente},${print.responsavel},${print.motivo},${print.qtd_col},${print.val_col},${print.qtd_pb},${print.val_pb},${print.mtd_pgto},${print.val_total},${print.registrationDate}\n`;
+    // Recebendo o JSON com data inicial e data final
+    const { dataInicial, dataFinal } = req.body;
+
+    // Convertendo as datas recebidas em strings para objetos Date
+    const startDate = new Date(dataInicial);
+    const endDate = new Date(dataFinal);
+
+    // Realizando a consulta para obter os registros entre as datas fornecidas
+    const prints = await Print.find({
+      registrationDate: {
+        $gte: startDate,
+        $lte: endDate
+      }
     });
 
+    // Verificando se há registros no intervalo de datas
+    if (prints.length === 0) {
+      return res.status(404).json({ message: 'Nenhum registro encontrado no intervalo de datas fornecido.' });
+    }
+
+    // Criação do conteúdo CSV com os registros filtrados
+    let csvData = 'Cliente,Responsável,Motivo,Qtd Col,Val Col,Qtd PB,Val PB,Método Pgt,Val Total,Data de Registro\n';
+    prints.forEach(print => {
+      csvData += `${print.cliente},${print.responsavel},${print.motivo},${print.qtd_col},${print.val_col},${print.qtd_pb},${print.val_pb},${print.mtd_pgto},${print.val_total},${print.registrationDate.toLocaleDateString('pt-BR')}\n`;
+    });
+
+    // Definindo cabeçalhos para download automático
     res.header('Content-Type', 'text/csv');
-    res.attachment('prints.csv');
+    res.attachment('impressao_filtrada.csv'); // Nome do arquivo CSV gerado
     return res.send(csvData);
 
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao exportar dados para CSV' });
+    console.error(error);
+    return res.status(500).json({ error: 'Erro ao exportar dados para CSV.' });
   }
 });
 
