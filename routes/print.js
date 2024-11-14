@@ -44,6 +44,7 @@ router.post("/add", async (req, res) => {
       registrationDate: newPrint.registrationDate,
     });
   } catch (error) {
+    console.error("<E> Erro de registro.");
     res.status(500).json({ error: "Erro ao registrar impressão" });
   }
 });
@@ -52,11 +53,12 @@ router.post("/add", async (req, res) => {
 router.get("/report", async (req, res) => {
   try {
     // Recebendo o JSON com data inicial e data final
-    const { dataInicial, dataFinal } = req.query;
+    const { inicial, final } = req.query;
+    console.log("RECEIVED: ", inicial, final);
 
     // Convertendo as datas recebidas em strings para objetos Date
-    const startDate = new Date(dataInicial);
-    const endDate = new Date(dataFinal);
+    const startDate = new Date(inicial);
+    const endDate = new Date(final);
 
     // Realizando a consulta para obter os registros entre as datas fornecidas
     const prints = await Print.find({
@@ -92,5 +94,11 @@ router.get("/report", async (req, res) => {
     return res.status(500).json({ error: "Erro ao exportar dados para CSV." });
   }
 });
+
+// Rota Apenas para Testar Conexões
+router.get("/status", async (req, res) => 
+  {
+    res.status(200).send('');
+  })
 
 module.exports = router;
