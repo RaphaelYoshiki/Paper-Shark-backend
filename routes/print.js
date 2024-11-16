@@ -49,8 +49,40 @@ router.post("/add", async (req, res) => {
   }
 });
 
-// Rota para exportar dados em CSV
+// Rota para exportar relatório em JSON
 router.get("/report", async (req, res) => {
+  try {
+    // Recebendo o JSON com data inicial e data final
+    const { inicial, final } = req.query;
+    console.log("RECEIVED: ", inicial, final);
+
+    // Convertendo as datas recebidas em strings para objetos Date
+    const startDate = new Date(inicial);
+    const endDate = new Date(final);
+
+    // Realizando a consulta para obter os registros entre as datas fornecidas
+    let prints = await Print.find({
+      registrationDate: {
+        $gte: startDate,
+        $lte: endDate,
+      }
+    });
+    // Verificando se há registros no intervalo de datas
+    if (prints.length === 0) {
+      return res.status(404).json({
+        message: "Nenhum registro encontrado no intervalo de datas fornecido.",
+      });
+    }
+
+    return res.status(200).json(prints);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Erro ao obter dados." });
+  }
+});
+
+// Rota para exportar dados em CSV
+router.get("/reportCSV", async (req, res) => {
   try {
     // Recebendo o JSON com data inicial e data final
     const { inicial, final } = req.query;
@@ -65,7 +97,7 @@ router.get("/report", async (req, res) => {
       registrationDate: {
         $gte: startDate,
         $lte: endDate,
-      },
+      }
     });
     // Verificando se há registros no intervalo de datas
     if (prints.length === 0) {
@@ -89,6 +121,7 @@ router.get("/report", async (req, res) => {
     res.header("Content-Type", "text/csv");
     res.attachment("impressao_filtrada.csv"); // Nome do arquivo CSV gerado
     return res.send(csvData);
+    
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Erro ao exportar dados para CSV." });
