@@ -32,8 +32,6 @@ async function addController(req, res)
         // Salvar
         await newPrint.save();
     
-        console.log(await Print.find());
-    
         // Respostas
         res.json({
         message: "Impressão registrada com sucesso!",
@@ -41,7 +39,6 @@ async function addController(req, res)
         registrationDate: newPrint.registrationDate,
         });
     } catch (error) {
-        console.error("<E> Erro de registro.");
         res.status(500).json({ error: "Erro ao registrar impressão" });
     }
 }

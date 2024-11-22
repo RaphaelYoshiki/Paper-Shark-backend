@@ -4,7 +4,6 @@ async function CSVReportController(req, res)
     try {
         // Recebendo o JSON com data inicial e data final
         const { inicial, final } = req.query;
-        console.log("RECEIVED: ", inicial, final);
 
         // Convertendo as datas recebidas em strings para objetos Date
         const startDate = new Date(inicial);
@@ -41,7 +40,6 @@ async function CSVReportController(req, res)
         return res.send(csvData);
         
         } catch (error) {
-        console.error(error);
         return res.status(500).json({ error: "Erro ao exportar dados para CSV." });
         }
 }

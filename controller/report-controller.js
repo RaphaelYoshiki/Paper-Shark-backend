@@ -4,7 +4,6 @@ async function reportController(req, res)
     try {
         // Recebendo o JSON com data inicial e data final
         const { inicial, final } = req.query;
-        console.log("RECEIVED: ", inicial, final);
     
         // Convertendo as datas recebidas em strings para objetos Date
         const startDate = new Date(inicial);
@@ -26,7 +25,6 @@ async function reportController(req, res)
     
         return res.status(200).json(prints);
       } catch (error) {
-        console.error(error);
         return res.status(500).json({ error: "Erro ao obter dados." });
       }
 }
