@@ -1,5 +1,5 @@
 const Print = require("../models/Print");
-async function addController(req, res)
+async function addRegisterController(req, res)
 {
     try {
         const {
@@ -43,4 +43,4 @@ async function addController(req, res)
     }
 }
 
-module.exports = addController;
+module.exports = addRegisterController;
